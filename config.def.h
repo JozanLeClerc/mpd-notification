@@ -16,7 +16,7 @@
 
 /* strings used to display notification messages
  * TEXT_PLAY_* need to include one string modifier '%s' each. */
-#define TEXT_TOPIC		"MPD Notification"
+#define TEXT_TOPIC		"MPD"
 #define TEXT_PLAY_PAUSE_STATE	"%s "
 #define TEXT_PLAY_PAUSE_TITLE	"<b>%s</b>"
 #define TEXT_PLAY_PAUSE_ARTIST	"by <i>%s</i>"

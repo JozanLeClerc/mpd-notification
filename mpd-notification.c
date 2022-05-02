@@ -70,7 +70,6 @@ GdkPixbuf * retrieve_artwork(const char * music_dir, const char * uri) {
 	char * uri_path = NULL, * imagefile = NULL;
 	DIR * dir;
 	struct dirent * entry;
-	regex_t regex;
 
 #ifdef HAVE_LIBAV
 	int i;
@@ -149,16 +148,14 @@ image:
 		goto fail;
 	}
 
-	if (regcomp(&regex, REGEX_ARTWORK, REG_NOSUB + REG_ICASE) != 0) {
-		fprintf(stderr, "%s: Could not compile regex.\n", program);
-		goto fail;
-	}
-
 	while ((entry = readdir(dir))) {
 		if (*entry->d_name == '.')
 			continue;
 
-		if (regexec(&regex, entry->d_name, 0, NULL, 0) == 0) {
+		if (strcmp(entry->d_name, "folder.jpg") == 0 ||
+			strcmp(entry->d_name, "folder.png") == 0 ||
+			strcmp(entry->d_name, "cover.jpg") == 0 ||
+			strcmp(entry->d_name, "cover.png") == 0) {
 			if (verbose > 0)
 				printf("%s: Found image file: %s\n", program, entry->d_name);
 
@@ -180,7 +177,6 @@ image:
 		}
 	}
 
-	regfree(&regex);
 	closedir(dir);
 
 fail:
@@ -377,7 +373,7 @@ int main(int argc, char ** argv) {
 		notify_notification_new(TEXT_TOPIC, TEXT_NONE, ICON_AUDIO_X_GENERIC, NULL);
 #		endif
 	notify_notification_set_category(notification, PROGNAME);
-	notify_notification_set_urgency(notification, NOTIFY_URGENCY_NORMAL);
+	notify_notification_set_urgency(notification, NOTIFY_URGENCY_LOW);
 	notify_notification_set_timeout(notification, notification_timeout * 1000);
 
 	signal(SIGHUP, received_signal);

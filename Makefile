@@ -1,7 +1,7 @@
 # mpd-notification - Notify about tracks played by mpd
 
 # commands
-CC	:= gcc
+CC	:= /usr/bin/cc
 MD	:= markdown
 INSTALL	:= install
 CP	:= cp
@@ -47,16 +47,18 @@ README.html: README.md
 install: install-bin install-doc
 
 install-bin: mpd-notification
-	$(INSTALL) -D -m0755 mpd-notification $(DESTDIR)/usr/bin/mpd-notification
+	$(INSTALL) -D -m0755 mpd-notification $(DESTDIR)/usr/local/bin/mpd-notification
 ifneq ($(CFLAGS_SYSTEMD),)
 	$(INSTALL) -D -m0644 systemd/mpd-notification.service $(DESTDIR)/usr/lib/systemd/user/mpd-notification.service
 endif
 
 install-doc: README.html
-	$(INSTALL) -D -m0644 README.md $(DESTDIR)/usr/share/doc/mpd-notification/README.md
-	$(INSTALL) -D -m0644 README.html $(DESTDIR)/usr/share/doc/mpd-notification/README.html
-	$(INSTALL) -D -m0644 screenshots/sound.png $(DESTDIR)/usr/share/doc/mpd-notification/screenshots/sound.png
-	$(INSTALL) -D -m0644 screenshots/artwork.png $(DESTDIR)/usr/share/doc/mpd-notification/screenshots/artwork.png
+	mkdir -p -v /usr/local/share/doc/mpd-notification
+	mkdir -p -v /usr/local/share/doc/mpd-notification/screenshots
+	$(INSTALL) -D -m0644 README.md $(DESTDIR)/usr/local/share/doc/mpd-notification/README.md
+	$(INSTALL) -D -m0644 README.html $(DESTDIR)/usr/local/share/doc/mpd-notification/README.html
+	$(INSTALL) -D -m0644 screenshots/sound.png $(DESTDIR)/usr/local/share/doc/mpd-notification/screenshots/sound.png
+	$(INSTALL) -D -m0644 screenshots/artwork.png $(DESTDIR)/usr/local/share/doc/mpd-notification/screenshots/artwork.png
 
 clean:
 	$(RM) -f *.o *~ README.html mpd-notification version.h
