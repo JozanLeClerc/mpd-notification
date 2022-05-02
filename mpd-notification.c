@@ -1,8 +1,19 @@
 /*
- * (C) 2011-2020 by Christian Hesse <mail@eworm.de>
+ * (C) 2011-2022 by Christian Hesse <mail@eworm.de>
  *
- * This software may be used and distributed according to the terms
- * of the GNU General Public License, incorporated herein by reference.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
  */
 
 #include "mpd-notification.h"
@@ -242,8 +253,12 @@ int main(int argc, char ** argv) {
 	music_dir = getenv("XDG_MUSIC_DIR");
 
 	/* parse config file */
-	if (chdir(getenv("HOME")) == 0 && access(".config/mpd-notification.conf", R_OK) == 0 &&
-			(ini = iniparser_load(".config/mpd-notification.conf")) != NULL) {
+	if (chdir(getenv("XDG_CONFIG_HOME")) == 0 && access("mpd-notification.conf", R_OK) == 0) {
+		ini = iniparser_load("mpd-notification.conf");
+	} else if (chdir(getenv("HOME")) == 0 && access(".config/mpd-notification.conf", R_OK) == 0) {
+		ini = iniparser_load(".config/mpd-notification.conf");
+	}
+	if (ini != NULL) {
 		file_workaround = iniparser_getboolean(ini, ":notification-file-workaround", file_workaround);
 		mpd_host = iniparser_getstring(ini, ":host", mpd_host);
 		mpd_port = iniparser_getint(ini, ":port", mpd_port);
@@ -397,7 +412,7 @@ int main(int argc, char ** argv) {
 			/* There's a bug in libnotify where the server spec version is fetched
 			 * too late, which results in issue with image date. Make sure to
 			 * show a notification without image data (just generic icon) first. */
-			if (last_state != MPD_STATE_PLAY) {
+			if (last_state != MPD_STATE_PLAY && last_state != MPD_STATE_PAUSE) {
 				notify_notification_update(notification, TEXT_TOPIC, "Starting playback...", ICON_AUDIO_X_GENERIC);
 				notify_notification_show(notification, NULL);
 			}
