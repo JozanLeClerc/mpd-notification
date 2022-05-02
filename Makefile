@@ -1,7 +1,7 @@
 # mpd-notification - Notify about tracks played by mpd
 
 # commands
-CC	:= /usr/bin/cc
+CC	:= cc
 MD	:= markdown
 INSTALL	:= install
 CP	:= cp
